@@ -4,10 +4,10 @@
 #include <cmath>
 #include <algorithm>
 #include "switcher.h"
+#include "Kutta-Mersen.h"
 
 #ifdef test
-
-//#define eiler
+#define runge
 
 int main()
 {
@@ -15,7 +15,13 @@ int main()
 #ifdef eiler
     method = new Eiler;
 #else
-    method = new RungeKutt;
+    #ifdef runge
+        method = new RungeKutt;
+    #else
+        #ifdef kutta
+            method = new KuttaMersen;
+        #endif
+    #endif
 #endif
     std::vector<std::function<double(double, const std::vector<double>&)>> functions(2); // Правые части уравнений системы
     functions[0] = [](double t, const std::vector<double>& x_vec){
@@ -24,12 +30,13 @@ int main()
     functions[1] = [](double t, const std::vector<double>& x_vec) {
         return -x_vec[0];
     };
-    double h = 0.001; //Шаг метода
+    double h = 0.01; //Шаг метода
     double t_start = 0; //Стартовая точка
-    double t_finish = 1; //Конечная точка
+    double t_finish = 100; //Конечная точка
+    double eps = 0.0000000001; //Точность
     std::vector<double> x_start_vec{1, 1}; //x(0) = 1, x'(0) = 1
 
-    method->Execute(h, t_start, t_finish, x_start_vec, functions); // Запуск функции
+    method->Execute(h, t_start, t_finish, x_start_vec, functions, eps); // Запуск функции
 
     auto x_vecs_result = method->get_x_result_vecs();
     auto t_vec_result = method->get_t_result_vec();

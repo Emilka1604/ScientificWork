@@ -1,6 +1,6 @@
 #ifndef SWITCHER_H
 #define SWITCHER_H
 
-//#define test
+#define test
 
 #endif // SWITCHER_H
