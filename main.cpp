@@ -9,7 +9,7 @@
 
 #ifndef test
 
-#define runge
+#define kutta
 
 int main(int argc, char *argv[])
 {
