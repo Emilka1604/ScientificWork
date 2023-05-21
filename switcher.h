@@ -3,4 +3,6 @@
 
 #define test
 
+#define runge
+
 #endif // SWITCHER_H

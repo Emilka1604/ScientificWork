@@ -11,15 +11,14 @@
 
 int main()
 {
-    BaseMethod* method;
 #ifdef eiler
-    method = new Eiler;
+    Eiler method;
 #else
     #ifdef runge
-        method = new RungeKutt;
+        RungeKutt method;
     #else
         #ifdef kutta
-            method = new KuttaMersen;
+            KuttaMersen method;
         #endif
     #endif
 #endif
@@ -33,13 +32,13 @@ int main()
     double h = 0.01; //Шаг метода
     double t_start = 0; //Стартовая точка
     double t_finish = 100; //Конечная точка
-    double eps = 0.0000000001; //Точность
+    double eps = 10e-6; //Точность
     std::vector<double> x_start_vec{1, 1}; //x(0) = 1, x'(0) = 1
 
-    method->Execute(h, t_start, t_finish, x_start_vec, functions, eps); // Запуск функции
+    method.Execute(h, t_start, t_finish, x_start_vec, functions, eps); // Запуск функции
 
-    auto x_vecs_result = method->get_x_result_vecs();
-    auto t_vec_result = method->get_t_result_vec();
+    auto x_vecs_result = method.get_x_result_vecs();
+    auto t_vec_result = method.get_t_result_vec();
 
 
     std::vector<std::function<double(double)>> answers(2); // Точное решение

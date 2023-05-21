@@ -1,24 +1,21 @@
 #ifndef KUTTAMERSEN_H
 #define KUTTAMERSEN_H
 
-#include "BaseMethod.h"
+#include <vector>
+#include <functional>
+#include <math.h>
+#include <algorithm>
+#include <numeric>
 
-class KuttaMersen : public BaseMethod {
-public:
-
-    void Execute(double h, double t_start, double t_finish, const std::vector<double>& x_start_vec,
-               const std::vector<std::function<double(double, const std::vector<double>&)>>& functions, double eps) override {
-        std::vector<double> x_current_vec = x_start_vec;
-        double t_current = t_start;
-        do {
-            x_result_vecs.push_back(x_current_vec);
-            t_result_vec.push_back(t_current);
-            x_current_vec = step_selection(h, t_current, x_current_vec, functions, eps);
-            t_current += h;
-        } while(t_current < t_finish);
-    }
+class KuttaMersen{
 
 private:
+
+    std::vector<std::vector<double>> x_result_vecs;
+    std::vector<double> t_result_vec;
+    std::vector<std::size_t> div_vec;
+    std::vector<std::size_t> doubling_vec;
+    std::size_t right_part_calc_count{0};
 
     std::vector<double> step_selection(double& h, double t_current, const std::vector<double>& x_current_vec,
                     const std::vector<std::function<double(double, const std::vector<double>&)>>& functions, double eps) {
@@ -46,12 +43,6 @@ private:
             }
         } while(R > eps);
         return x_vec;
-    }
-
-    std::vector<double> calc_next_vec(double h, double t_current, const std::vector<double>& x_current_vec,
-                                      const std::vector<std::function<double(double, const std::vector<double>&)>>& functions) override {
-
-        return {};
     }
 
     std::vector<double> x_vec_calc(double h, const std::vector<double>& x_current_vec,
@@ -144,6 +135,48 @@ private:
             nu4[i] = h * functions[i](t + h, x_vec_new);
         }
         return nu4;
+    }
+
+public:
+
+    void Execute(double h, double t_start, double t_finish, const std::vector<double>& x_start_vec,
+               const std::vector<std::function<double(double, const std::vector<double>&)>>& functions, double eps) {
+        std::vector<double> x_current_vec = x_start_vec;
+        double t_current = t_start;
+        do {
+            x_result_vecs.push_back(x_current_vec);
+            t_result_vec.push_back(t_current);
+            x_current_vec = step_selection(h, t_current, x_current_vec, functions, eps);
+            t_current += h;
+        } while(t_current < t_finish);
+    }
+
+    std::vector<double> get_t_result_vec() {
+        return t_result_vec;
+    }
+
+    std::vector<std::vector<double>> get_x_result_vecs() {
+        return x_result_vecs;
+    }
+
+    std::size_t get_step_divide_count() {
+        return std::accumulate(div_vec.begin(), div_vec.end(), 0);
+    }
+
+    std::size_t get_step_doubling_count() {
+        return std::accumulate(doubling_vec.begin(), doubling_vec.end(), 0);
+    }
+
+    std::size_t get_right_part_calc_count() {
+        return right_part_calc_count;
+    }
+
+    std::vector<std::size_t> get_div_vec() {
+        return div_vec;
+    }
+
+    std::vector<std::size_t> get_doubling_vec() {
+        return doubling_vec;
     }
 
 

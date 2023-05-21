@@ -9,7 +9,6 @@
 
 #ifndef test
 
-#define runge
 
 int main(int argc, char *argv[])
 {
@@ -22,34 +21,35 @@ int main(int argc, char *argv[])
     functions[1] = [zeta, omega](double t, const std::vector<double>& x_vec) {
         return -2 * zeta * omega * x_vec[1] - omega * omega * x_vec[0];
     };
-    double h = 0.0001;
+    double h = 0.001;
     double t_start = 0.0;
     double t_finish = 100;
     std::vector<double> x_start_vec{15.0, 15.0};
-    double eps = 0.000000001;
-    BaseMethod* method;
+    double eps = 0.000001;
 #ifdef eiler
-    method = new Eiler;
+    Eiler method;
 #else
     #ifdef runge
-        method = new RungeKutt;
+        RungeKutt method;
     #else
         #ifdef kutta
-            method = new KuttaMersen;
+            KuttaMersen method;
         #endif
     #endif
 #endif
-    method->Execute(h, t_start, t_finish, x_start_vec, functions, eps);
-    auto x_vecs_result = method->get_x_result_vecs();
-    auto t_vec_result = method->get_t_result_vec();
-    auto step_div_vec = method->get_div_vec();
-    auto step_doubling_vec = method->get_doubling_vec();
-    auto step_divide_counter = method->get_step_divide_count();
-    auto step_doubling_counter = method->get_step_doubling_count();
+    method.Execute(h, t_start, t_finish, x_start_vec, functions, eps, true);
+    auto x_vecs_result = method.get_x_result_vecs();
+    auto t_vec_result = method.get_t_result_vec();
+    auto step_div_vec = method.get_div_vec();
+    auto step_doubling_vec = method.get_doubling_vec();
+    auto step_divide_counter = method.get_step_divide_count();
+    auto step_doubling_counter = method.get_step_doubling_count();
     std::cout << "Div: " << step_divide_counter <<
-                 "  Double: " << step_doubling_counter << " Right part count: " << method->get_right_part_calc_count();
+                 "  Double: " << step_doubling_counter << " Right part count: " << method.get_right_part_calc_count();
     QVector<double> t, x1, x2;
     QVector<std::size_t> div, doubling;
+
+    //std::cout << "\n" << x_vecs_result.size() << " " << t_vec_result.size() << " " << step_div_vec.size() << " " << step_doubling_vec.size();
     for(std::size_t i = 0; i < t_vec_result.size(); ++i) {
         t.push_back(t_vec_result[i]);
         x1.push_back(x_vecs_result[i][0]);
@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
         div.push_back(step_div_vec[i]);
         doubling.push_back(step_doubling_vec[i]);
     }
+
+//    std::cout << x1.size();
     QApplication a(argc, argv);
     MainWindow w;
     w.CreateTable(t, x1, x2, div, doubling);
