@@ -16,6 +16,7 @@ private:
     std::vector<double> t_result_vec;
     std::vector<std::size_t> div_vec;
     std::vector<std::size_t> doubling_vec;
+    std::vector<double> step_vec;
     std::size_t right_part_calc_count{0};
     const std::size_t p = 1;
 
@@ -36,16 +37,15 @@ private:
         std::vector<double> res_with_step;
         std::vector<double> half_step;
         std::vector<double> res_with_step_div_two;
-        bool isFirstIter = true;
         div_vec.push_back(0);
         doubling_vec.push_back(0);
+        if(doubleStep) {
+            h *= 2;
+            ++doubling_vec[doubling_vec.size() - 1];
+            doubleStep = false;
+        }
         do {
-            if (isFirstIter) {
-                res_with_step = calc_next_vec(h, t_current, x_current_vec, functions);
-                isFirstIter = false;
-            } else {
-                res_with_step = std::move(half_step);
-            }
+            res_with_step = calc_next_vec(h, t_current, x_current_vec, functions);
             half_step = calc_next_vec(h / 2, t_current, x_current_vec, functions);
             res_with_step_div_two = calc_next_vec(h / 2, t_current + h / 2, half_step, functions);
             std::vector<double> discrepancy(x_current_vec.size());
@@ -94,6 +94,10 @@ public:
         return doubling_vec;
     }
 
+    std::vector<double> get_step_vec() {
+        return step_vec;
+    }
+
     void Execute(double h, double t_start, double t_finish, const std::vector<double>& x_start_vec,
                const std::vector<std::function<double(double, const std::vector<double>&)>>& functions, double eps, const bool stepCorrect = false){
         std::vector<double> x_current_vec = x_start_vec;
@@ -105,14 +109,11 @@ public:
             if(stepCorrect) {
                 x_current_vec = richardson(h, t_current, x_current_vec, functions, eps, doubleStep);
                 t_current += h;
-                if(doubleStep) {
-                    ++doubling_vec[doubling_vec.size() - 1];
-                    h *= 2;
-                }
             } else {
                 x_current_vec = calc_next_vec(h, t_current, x_current_vec, functions);
                 t_current += h;
             }
+            step_vec.push_back(h);
         } while(t_current < t_finish);
     }
 

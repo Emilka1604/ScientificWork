@@ -28,6 +28,18 @@ set(PROJECT_SOURCES
         switcher.h
         BaseMethod.h
         Kutta-Mersen.h
+        EilerImplicit.h
+        ScalarEqualation.cpp
+        VecTest.cpp
+        common.cpp
+        Newton.h
+        EilerImplicit2on2.h
+        EilerImplicit3on3.h
+        EilerImplicit2on2.cpp
+        EilerImplicit3on3.cpp
+        EilerImplicit.cpp
+        NewtonTest.cpp
+        Explicit3on3.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

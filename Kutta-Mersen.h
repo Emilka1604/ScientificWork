@@ -15,28 +15,33 @@ private:
     std::vector<double> t_result_vec;
     std::vector<std::size_t> div_vec;
     std::vector<std::size_t> doubling_vec;
+    std::vector<double> step_vec;
     std::size_t right_part_calc_count{0};
 
     std::vector<double> step_selection(double& h, double t_current, const std::vector<double>& x_current_vec,
-                    const std::vector<std::function<double(double, const std::vector<double>&)>>& functions, double eps) {
+                    const std::vector<std::function<double(double, const std::vector<double>&)>>& functions, double eps, bool& doubleStep) {
         double R = 0;
         std::vector<double> x_vec;
         std::vector<double> x_vec_2;
         div_vec.push_back(0);
         doubling_vec.push_back(0);
+        if(doubleStep) {
+            h *= 2;
+            ++doubling_vec[doubling_vec.size() - 1];
+            doubleStep = false;
+        }
         do {
             auto nu1 = this->nu1(h, t_current, x_current_vec, functions);
             auto nu2 = this->nu2(h, t_current, nu1, x_current_vec, functions);
             auto nu3 = this->nu3(h, t_current, nu1, nu2, x_current_vec, functions);
-            auto nu4 = this->nu4(h, t_current, nu1, nu2, x_current_vec, functions);
+            auto nu4 = this->nu4(h, t_current, nu1, nu3, x_current_vec, functions);
             auto nu5 = this->nu5(h, t_current, nu1, nu3, nu4, x_current_vec, functions);
             right_part_calc_count += 5;
             x_vec = x_vec_calc(h, x_current_vec, nu1, nu4, nu5);
             x_vec_2 = x_vec_2_calc(h, x_current_vec, nu1, nu3, nu4);
             R = this->R(x_vec, x_vec_2);
             if(R < eps / 64) {
-                h *= 2;
-                ++doubling_vec[doubling_vec.size() - 1];
+                doubleStep = true;
             } else if(R > eps) {
                 h /= 2;
                 ++div_vec[div_vec.size() - 1];
@@ -108,12 +113,12 @@ private:
         return nu3;
     }
 
-    std::vector<double> nu4(double h, double t, const std::vector<double>& nu1,const std::vector<double>& nu2,
+    std::vector<double> nu4(double h, double t, const std::vector<double>& nu1,const std::vector<double>& nu3,
             const std::vector<double>& x_vec, const std::vector<std::function<double(double, const std::vector<double>&)>>& functions) {
 
         std::vector<double> x_vec_new(x_vec.size());
         for(std::size_t i = 0; i < x_vec.size(); ++i) {
-            x_vec_new[i] = x_vec[i] + nu1[i] / 8 + 3 * nu2[i] / 8;
+            x_vec_new[i] = x_vec[i] + nu1[i] / 8 + 3 * nu3[i] / 8;
         }
         std::vector<double> nu4(x_vec.size());
         for(std::size_t i = 0; i < x_vec.size(); ++i) {
@@ -132,9 +137,9 @@ private:
         }
         std::vector<double> nu5(x_vec.size());
         for(std::size_t i = 0; i < x_vec.size(); ++i) {
-            nu4[i] = h * functions[i](t + h, x_vec_new);
+            nu5[i] = h * functions[i](t + h, x_vec_new);
         }
-        return nu4;
+        return nu5;
     }
 
 public:
@@ -143,11 +148,13 @@ public:
                const std::vector<std::function<double(double, const std::vector<double>&)>>& functions, double eps) {
         std::vector<double> x_current_vec = x_start_vec;
         double t_current = t_start;
+        bool doubleStep = false;
         do {
             x_result_vecs.push_back(x_current_vec);
             t_result_vec.push_back(t_current);
-            x_current_vec = step_selection(h, t_current, x_current_vec, functions, eps);
+            x_current_vec = step_selection(h, t_current, x_current_vec, functions, eps, doubleStep);
             t_current += h;
+            step_vec.push_back(h);
         } while(t_current < t_finish);
     }
 
@@ -177,6 +184,10 @@ public:
 
     std::vector<std::size_t> get_doubling_vec() {
         return doubling_vec;
+    }
+
+    std::vector<double> get_step_vec() {
+        return step_vec;
     }
 
 
