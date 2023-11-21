@@ -23,11 +23,11 @@ int main(int argc, char *argv[])
     functions[2] = [](double t, const std::vector<double>& x_vec) {
         return 3*10000000*x_vec[1]*x_vec[1];
     };
-    double h = 0.1;
+    double h = 0.001;
     double t_start = 0.0;
     double t_finish = 0.3;
     std::vector<double> x_start_vec{1.0, 0.0, 0.0};
-    double eps = 1e-8;
+    double eps = 1e-6;
 #ifdef eiler
     Eiler method;
 #else

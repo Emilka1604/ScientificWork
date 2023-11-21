@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     std::function<double(double, double, double, double)> df3dz = [](double t, double x1, double x2, double x3){
         return 0.0;
     };
-    double h = 1e-3;
+    doublvew = 1e-1;
     double t_start = 0.0;
     double t_finish = 0.3;
     std::vector<double> x_start_vec{1.0, 0.0, 0.0};

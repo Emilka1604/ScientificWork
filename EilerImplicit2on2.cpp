@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
     std::function<double(double, double, double)> df2dy = [nu](double t, double x1, double x2){
         return nu*(1-x1*x1);
     };
-    double h = 0.001;
+    double h = 1e-3;
     double t_start = 0.0;
-    double t_finish = 0.01;
+    double t_finish = 1e-2;
     std::vector<double> x_start_vec{2.0, 0.0};
     EilerImplicit2on2 method;
     method.Execute(h, t_start, t_finish, x_start_vec, f1, f2, df1dx, df1dy, df2dx, df2dy);
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         x1.push_back(x_vecs_result[i][0]);
         x2.push_back(x_vecs_result[i][1]);
     }
-
+    std::cout << method.getNumOfSteps();
     QApplication a(argc, argv);
     MainWindow w;
     w.CreateTable(h_vec, t, x1, x2);

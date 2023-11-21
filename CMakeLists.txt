@@ -40,11 +40,14 @@ set(PROJECT_SOURCES
         EilerImplicit.cpp
         NewtonTest.cpp
         Explicit3on3.cpp
+        EilerImplicitAnyDim.h
+        EilerImplicitAnyDim2on2.cpp
+        EilerImplicitAnyDim3on3.cpp
+        Rado2A.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SystemDE
-        MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
@@ -79,7 +82,3 @@ set_target_properties(SystemDE PROPERTIES
 install(TARGETS SystemDE
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(SystemDE)
-endif()
