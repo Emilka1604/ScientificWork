@@ -10,7 +10,7 @@ private:
     std::vector<double> t_result_vec;
     std::vector<double> step_vec;
     NewtonMethod nm;
-
+wfewfe
     std::vector<double> calc_next_vec(double h, double t_current, const std::vector<double>& x_current_vec,
                                       std::function<double(double, double, double, double)> f1,
                                       std::function<double(double, double, double, double)> f2,
