@@ -18,7 +18,7 @@ private:
                                       double eps){
 
         std::vector<std::function<double(const std::vector<double>&)>> Fnew;
-        \
+    
         for(std::size_t i = 0; i < F.size(); ++i) {
             Fnew.push_back([h, t_current, &x_current_vec, &F, i](const std::vector<double>& x) {
                 return x_current_vec[i] + h/2*(F[i](t_current, x_current_vec) + F[i](t_current+h, x))-x[i];
