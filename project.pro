@@ -28,7 +28,7 @@ HEADERS += $$INCLUDE_DIR/BaseMethod.h \
            $$INCLUDE_DIR/Kutta-Mersen.h \
            $$INCLUDE_DIR/mainwindow.h \
            $$INCLUDE_DIR/Newton.h \
-           $$INCLUDE_DIR/Rado2A.h \
+           $$INCLUDE_DIR/RungeKuttImpl.h \
            $$INCLUDE_DIR/Runge-Kutt.h \
            $$INCLUDE_DIR/switcher.h
 SOURCES += $$SOURCE_DIR/EilerImplicit.cpp \
@@ -38,6 +38,7 @@ SOURCES += $$SOURCE_DIR/EilerImplicit.cpp \
            $$SOURCE_DIR/EilerImplicitAnyDim2on2.cpp \
            $$SOURCE_DIR/EilerImplicitAnyDim3on3.cpp \
            $$SOURCE_DIR/Explicit3on3.cpp \
+           $$SOURCE_DIR/RungeKuttImpl.cpp \
            $$SOURCE_DIR/main.cpp \
            $$SOURCE_DIR/mainwindow.cpp \
            $$SOURCE_DIR/NewtonTest.cpp \
