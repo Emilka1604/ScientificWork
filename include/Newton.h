@@ -157,7 +157,6 @@ public:
             }
             currPoint = nextPoint;
         } while(!needToStop);
-        std::cout << numOfSteps << "\n";
         return nextPoint;
     }
 

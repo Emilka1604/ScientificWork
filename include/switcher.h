@@ -2,5 +2,5 @@
 #define SWITCHER_H
 
 #define rungekuttimpl
-#define eiler
+#define runge
 #endif // SWITCHER_H

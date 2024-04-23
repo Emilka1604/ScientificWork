@@ -6,6 +6,7 @@
 #include <math.h>
 #include <algorithm>
 #include <numeric>
+#include "BaseMethod.h"
 
 
 class Eiler{

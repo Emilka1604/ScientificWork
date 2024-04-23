@@ -21,11 +21,11 @@ int main(int argc, char *argv[])
     functions[1] = [nu](double t, const std::vector<double>& x_vec) {
         return nu * (1-x_vec[0]*x_vec[0]) * x_vec[1] - x_vec[0];
     };
-    double h = 0.001;
+    double h = 1e-3;
     double t_start = 0.0;
-    double t_finish = 0.01;
+    double t_finish = 1e-2;
     std::vector<double> x_start_vec{2.0, 0.0};
-    double eps = 1e-5;
+    double eps = 1e-6;
 #ifdef eiler
     Eiler method;
 #else
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
     w.Maketx1(t, x1);
     w.Maketx2(t, x2);
     w.Makex1x2(x1, x2);
+    w.MakeStepPlot(t, h_vec);
     w.setDivide(step_divide_counter);
     w.setDoubling(step_doubling_counter);
     w.setRightPartCalc(right_part_calc_count);

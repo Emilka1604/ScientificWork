@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     functions[2] = [](double t, const std::vector<double>& x_vec) {
         return 3*10000000*x_vec[1]*x_vec[1];
     };
-    double h = 0.001;
+    double h = 1e-1;
     double t_start = 0.0;
     double t_finish = 0.3;
     std::vector<double> x_start_vec{1.0, 0.0, 0.0};
@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
     w.Maketx1(t, x1);
     w.Maketx2(t, x2);
     w.Maketx3(t, x3);
+    w.MakeStepPlot(t, h_vec);
     w.setDivide(step_divide_counter);
     w.setDoubling(step_doubling_counter);
     w.setRightPartCalc(right_part_calc_count);

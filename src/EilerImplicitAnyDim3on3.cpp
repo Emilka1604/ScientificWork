@@ -58,12 +58,12 @@ int main(int argc, char *argv[])
               }
         }
     };
-    double h = 1e-3;
+    double h = 1e-1;
     double t_start = 0.0;
     double t_finish = 0.3;
     std::vector<double> x_start_vec{1.0, 0.0, 0.0};
     EilerImplicitAnyDim method;
-    method.Execute(h, t_start, t_finish, x_start_vec, F, J, 1e-6);
+    method.Execute(h, t_start, t_finish, x_start_vec, F, J, 1e-6, true);
     auto x_vecs_result = method.get_x_result_vecs();
     auto t_vec_result = method.get_t_result_vec();
     auto step_vec = method.get_step_vec();
@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
     w.Maketx1(t, x1);
     w.Maketx2(t, x2);
     w.Maketx3(t, x3);
+    w.MakeStepPlot(t, h_vec);
     w.show();
     //std::cout << "end";
     return a.exec();

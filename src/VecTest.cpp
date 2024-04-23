@@ -5,45 +5,61 @@
 #include <algorithm>
 #include "switcher.h"
 #include "Kutta-Mersen.h"
+#include "RungeKuttImpl.h"
+#include "EilerImplicitAnyDim.h"
+#include "cmath"
 
 #ifdef vecttest
-#define runge
+#define RUNGE
 
 int main()
 {
-#ifdef eiler
-    Eiler method;
-#else
-    #ifdef runge
-        RungeKutt method;
-    #else
-        #ifdef kutta
-            KuttaMersen method;
-        #endif
-    #endif
-#endif
-    double zeta = 1.0;
-    double omega = 1.0;
-    std::vector<std::function<double(double, const std::vector<double>&)>> functions(2); // Правые части уравнений системы
-    functions[0] = [](double t, const std::vector<double>& x_vec){
-        return x_vec[1];
+    std::vector<std::function<double(double, const std::vector<double>&)>> F{
+        [](double t, const std::vector<double>& x){
+            return x[1];
+        },
+        [](double t, const std::vector<double>& x) {
+            return -x[0];
+        }
     };
-    functions[1] = [](double t, const std::vector<double>& x_vec) {
-        return -x_vec[0];
+
+    std::vector<std::vector<std::function<double(double, const std::vector<double>&)>>> J{
+        {
+            [](double t, const std::vector<double>& x){
+                  return 0;
+            },
+            [](double t, const std::vector<double>& x){
+                  return 1;
+            },
+        },
+        {
+            [](double t, const std::vector<double>& x){
+                  return -1;
+            },
+            [](double t, const std::vector<double>& x){
+                  return 0;
+            },
+        }
     };
-//    functions[0] = [](double t, const std::vector<double>& x_vec){
-//        return x_vec[1];
-//    };
-//    functions[1] = [zeta, omega](double t, const std::vector<double>& x_vec) {
-//        return -2 * zeta * omega * x_vec[1] - omega * omega * x_vec[0];
-//    };
     double h = 1e-3; //Шаг метода
     double t_start = 0.0; //Стартовая точка
     double t_finish = 10.0; //Конечная точка
     double eps = 1e-6; //Точность
     std::vector<double> x_start_vec{1.0, 1.0}; //x(0) = 1, x'(0) = 1
 
-    method.Execute(h, t_start, t_finish, x_start_vec, functions, eps); // Запуск функции
+    #ifdef RUNGE
+    RungeKuttImpl method{{1.0/3, 1.0}, {{5.0/12, -1.0/12}, {3.0/4, 1.0/4}}, {3.0/4, 1.0/4}};
+    // double sqr = std::sqrt(6.0);
+    // RungeKuttImpl method{{(4 - sqr)/10, (4 + sqr)/10, 1.0},
+    //                         {{(88 - 7*sqr)/360, (296 - 169*sqr)/1800, (-2 + 3*sqr)/225},
+    //                         {(296 + 169*sqr)/1800, (88 + 7*sqr)/360, (-2 - 3*sqr)/225},
+    //                         {(16 - sqr)/36, (16 + sqr)/36, 1.0/9}}, 
+    //                         {(16 - sqr)/36, (16 + sqr)/36, 1.0/9}};
+    #endif
+    #ifdef EILER
+    EilerImplicitAnyDim method;
+    #endif
+    method.Execute(h, t_start, t_finish, x_start_vec, F, J, 1e-3);
 
     auto x_vecs_result = method.get_x_result_vecs();
     auto t_vec_result = method.get_t_result_vec();
